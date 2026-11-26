@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · English · Hindi · Sanskrit Translator</title>
+<meta name="description" content="A free English, Hindi and Sanskrit translator built on the open-source IndicTrans2 model, with romanized output, tips for better translations and a beginner's phrase guide.">
+<style>
+body{margin:0;font:16px/1.65 system-ui,sans-serif;background:#f7f6f3;color:#1f1e1b}
+main{max-width:720px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:28px;margin:8px 0 4px}h2{font-size:20px;margin-top:32px}
+a{color:#2f5fd0}
+.lead{font-size:18px;color:#3a3832}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:#fff;border:1px solid #dcd7cc;border-radius:8px;overflow:hidden}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #ece9e1;vertical-align:top}
+th{background:#f0ede6;font-size:14px}
+td.sa{font-size:19px}
+td.rom{font-style:italic;color:#4a473f}
+dt{font-weight:600;margin-top:14px}dd{margin:4px 0 0}
+.cta{display:inline-block;margin-top:8px;background:#2f5fd0;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px}
+footer{margin-top:40px;font-size:13px;color:#6b675e}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+<p><a href="./">← Back to the translator</a></p>
+<h1>About this translator</h1>
+<p class="lead">A free tool for translating between English, Hindi and Sanskrit, with a romanized line under every Hindi
+and Sanskrit result so you can read it aloud even if you don't read Devanagari.</p>
+<a class="cta" href="./">Start translating</a>
+
+<h2>Why Sanskrit</h2>
+<p>Sanskrit is the classical language of a vast body of literature, philosophy and science: the Vedas, the epics, the
+Bhagavad Gita, Pāṇini's grammar and much more. It is still studied, chanted and taught in schools, and a living community
+writes and speaks it today. Yet most translation tools treat it as an afterthought, if they support it at all. This
+project exists to make everyday English–Sanskrit translation easy to try, and to improve it over time.</p>
+
+<h2>How it works</h2>
+<p>Translations come from <strong>IndicTrans2</strong>, an open-source translation model released by
+<a href="https://ai4bharat.iitm.ac.in/">AI4Bharat</a> at IIT Madras that covers all 22 scheduled languages of India.
+When you press Translate, your text goes to a small server that runs the model and sends back:</p>
+<ul>
+<li>the translation in Devanagari script, and</li>
+<li>a <strong>romanized</strong> version in IAST (the International Alphabet of Sanskrit Transliteration), the system
+scholars use to write Sanskrit in Latin letters.</li>
+</ul>
+<p>English↔Hindi and English↔Sanskrit are translated directly. Hindi↔Sanskrit goes through English in two steps, so it
+takes a little longer and can lose some nuance.</p>
+<p>We're also fine-tuning the model on additional English–Sanskrit text, and switch to the improved version only when it
+scores better than the original on test sentences it has never seen.</p>
+
+<h2>Tips for better translations</h2>
+<ul>
+<li><strong>Write short, complete sentences.</strong> One idea per sentence translates far more reliably than a long,
+winding paragraph.</li>
+<li><strong>Put each sentence on its own line</strong> if you're translating several. Each line is translated
+separately and kept in order.</li>
+<li><strong>Avoid slang and idioms.</strong> "It's raining cats and dogs" won't survive the trip; "It is raining very
+heavily" will.</li>
+<li><strong>Spell names the common way.</strong> Unusual spellings of people and places can come back garbled.</li>
+<li><strong>Check anything important.</strong> For a tattoo, an inscription, a ceremony or anything published, ask a
+Sanskrit teacher or scholar to review the result. Machine translation is a starting point, not a final authority.</li>
+</ul>
+
+<h2>Reading the romanized line</h2>
+<p>IAST uses a few marks that change the sound. Once you know them, you can pronounce most words correctly:</p>
+<table>
+<tr><th>Mark</th><th>Sounds like</th><th>Example</th></tr>
+<tr><td>ā, ī, ū</td><td>long vowels: "father", "machine", "rule"</td><td><i>dhanyavād</i></td></tr>
+<tr><td>ṛ</td><td>a vowel "ri", as in "Krishna" (<i>kṛṣṇa</i>)</td><td><i>amṛta</i></td></tr>
+<tr><td>ś, ṣ</td><td>both roughly "sh"</td><td><i>śānti</i></td></tr>
+<tr><td>ṭ, ḍ, ṇ</td><td>"t", "d", "n" with the tongue curled back</td><td><i>sṭeśan</i></td></tr>
+<tr><td>ṃ, ṁ</td><td>a nasal hum on the vowel before it</td><td><i>kahāṁ</i></td></tr>
+<tr><td>ḥ</td><td>a soft breath after the vowel, echoing it</td><td><i>dhanyavādaḥ</i></td></tr>
+<tr><td>c</td><td>always "ch", as in "church"</td><td><i>ca</i> ("and")</td></tr>
+</table>
+<p>For Hindi, the romanized line follows the same system, so it sometimes shows a final "a" that isn't pronounced in
+everyday speech (for example <i>relave</i> for रेलवे, said "relve").</p>
+
+<h2>A few phrases to start with</h2>
+<table>
+<tr><th>English</th><th>Sanskrit</th><th>Romanized</th></tr>
+<tr><td>Hello</td><td class="sa">नमस्ते</td><td class="rom">namaste</td></tr>
+<tr><td>Good morning</td><td class="sa">सुप्रभातम्</td><td class="rom">suprabhātam</td></tr>
+<tr><td>Good night</td><td class="sa">शुभरात्रिः</td><td class="rom">śubharātriḥ</td></tr>
+<tr><td>How are you?</td><td class="sa">भवान् कथम् अस्ति?</td><td class="rom">bhavān katham asti?</td></tr>
+<tr><td>Thank you</td><td class="sa">धन्यवादः</td><td class="rom">dhanyavādaḥ</td></tr>
+<tr><td>Sorry / excuse me</td><td class="sa">क्षम्यताम्</td><td class="rom">kṣamyatām</td></tr>
+<tr><td>Yes / No</td><td class="sa">आम् / न</td><td class="rom">ām / na</td></tr>
+<tr><td>Where is the train station?</td><td class="sa">रेलस्थानकं कुत्र अस्ति?</td><td class="rom">relasthānakaṃ kutra asti?</td></tr>
+</table>
+<p>Try typing the English into the translator and comparing. Sanskrit often allows several correct phrasings, so the
+model's answer may differ from this table and still be right.</p>
+
+<h2>Questions</h2>
+<dl>
+<dt>Is it free?</dt>
+<dd>Yes. The site may show a small number of ads to help cover running costs.</dd>
+<dt>Why is the first translation sometimes slow?</dt>
+<dd>The translation server sleeps when nobody has used it for a while. The first request wakes it up, which can take a
+minute or two; after that, translations take a few seconds.</dd>
+<dt>Is my text stored?</dt>
+<dd>Our code doesn't save what you translate. See the <a href="privacy.html">privacy policy</a> for details, and please
+don't enter passwords or other sensitive information.</dd>
+<dt>Can it translate verses and classical texts?</dt>
+<dd>It can try, but it's best at everyday prose. Classical verse uses poetic word order, compounds and meter that a
+general-purpose model often flattens. Treat its output on scripture and poetry as a rough gloss.</dd>
+<dt>I found a bad translation. Can I report it?</dt>
+<dd>Please do: open an issue at
+<a href="https://github.com/brandenleelundy-cpu/sanskrit-translate/issues">our GitHub page</a> with the text you entered,
+what came back, and (if you know it) what it should be. Examples like these are exactly what we use to improve the
+model.</dd>
+</dl>
+
+<h2>Credits</h2>
+<p>Translation model: IndicTrans2 by AI4Bharat (MIT licence). Training data includes AI4Bharat's Bharat Parallel Corpus
+Collection (CC BY 4.0) and the Itihāsa corpus of Rāmāyaṇa and Mahābhārata translations (Apache 2.0). Romanization:
+the open-source <i>indic_transliteration</i> library. The site's source code is on
+<a href="https://github.com/brandenleelundy-cpu/sanskrit-translate">GitHub</a>.</p>
+
+<footer><a href="./">Translator</a> · <a href="privacy.html">Privacy</a></footer>
+</main>
+</body>
+</html>
