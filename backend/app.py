@@ -105,7 +105,12 @@ def translate(req: TranslateRequest):
     idx = [i for i, l in enumerate(lines) if l.strip()]
     results = [""] * len(lines)
     if idx:
-        translated = translate_lines([lines[i].strip() for i in idx], *direction)
+        try:
+            translated = translate_lines([lines[i].strip() for i in idx], *direction)
+        except OSError as e:  # model download failed (gated repo, missing HF_TOKEN, typo)
+            raise HTTPException(503, f"Model could not be loaded: {e}".splitlines()[0][:300])
+        except Exception as e:
+            raise HTTPException(500, f"{type(e).__name__}: {e}"[:300])
         for i, tr in zip(idx, translated):
             results[i] = tr
     translation = "\n".join(results)
