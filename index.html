@@ -83,7 +83,7 @@ function remote(text, from, to){
     method:"POST", headers:{"Content-Type":"application/json"},
     body: JSON.stringify({text:text, source:from, target:to})
   }).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json() })
-    .then(function(j){ return {translation:j.translation||"", romanized:j.romanized||"", note:"Done"} });
+    .then(function(j){ return {translation:j.translation||"", romanized:(j.romanized||"").replace(/\|\|/g,".").replace(/\|/g,"."), note:"Done"} });
 }
 
 function run(){
