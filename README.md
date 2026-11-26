@@ -49,3 +49,15 @@ Hugging Face Hub only if it's a clear improvement.
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandenleelundy-cpu/sanskrit-translate/blob/main/training/finetune_en_sa.ipynb)
 
 Then set `MODEL_EN_SA` in the Space's settings to the published model and restart the Space.
+
+## Ads (Google AdSense)
+
+The page has one responsive ad slot under the translator, and loads nothing until you configure it.
+
+1. Sign up at adsense.google.com and add the site `brandenleelundy-cpu.github.io`.
+2. AdSense gives you a publisher ID (`ca-pub-…`). Put it in `config.js` as `ADSENSE_CLIENT` and push;
+   that loads the AdSense code AdSense needs to see during review.
+3. Optional: create a display ad unit and set its ID as `ADSENSE_SLOT` (otherwise Auto ads places ads).
+4. In AdSense → **Privacy & messaging**, publish the European regulations (GDPR) message so EEA/UK visitors get a consent prompt.
+
+`privacy.html` covers the disclosures AdSense requires.
