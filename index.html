@@ -89,9 +89,12 @@ function remote(text, from, to){
 function run(){
   var from=$("f").value, to=$("t").value, text=$("i").value;
   $("st").textContent="Translating...";
+  var slow = setTimeout(function(){ $("st").textContent="Waking up the model, the first request can take a minute..." }, 4000);
   (API ? remote(text, from, to) : mock(text, from, to)).then(function(res){
+    clearTimeout(slow);
     $("o").textContent=res.translation; $("r").textContent=res.romanized; $("st").textContent=res.note;
   }).catch(function(e){
+    clearTimeout(slow);
     $("st").textContent="Backend error (" + e.message + "), using mock";
     mock(text, from, to).then(function(res){ $("o").textContent=res.translation; $("r").textContent=res.romanized; });
   });

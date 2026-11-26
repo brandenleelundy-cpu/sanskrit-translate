@@ -17,8 +17,18 @@ Until the fine-tuned IndicTrans2 backend is live, it runs on a small mock phrase
 
 ## Connect the real model
 
-GitHub Pages only serves static files, so the model backend has to run elsewhere
-(Hugging Face Spaces, Render, a GPU VM, …). When it's up, set `API_URL` in `config.js`.
+GitHub Pages only serves static files, so the model runs on a free Hugging Face
+Space. The backend lives in [`backend/`](backend/).
+
+1. On huggingface.co: **New → Space**, SDK **Docker** (blank template), hardware **CPU basic (free)**, public.
+2. **Files → Add file → Upload files**: drop in the four files from `backend/`
+   (`app.py`, `Dockerfile`, `requirements.txt`, `README.md`) and commit.
+3. If the build log says the model is gated: accept the terms on the model's page
+   and add an `HF_TOKEN` secret (a read token) in the Space's settings.
+4. When the Space shows *Running*, set `API_URL` in `config.js` to
+   `https://<hf-username>-<space-name>.hf.space` and push.
+
+Free Spaces sleep after a period of no traffic; the first request afterwards takes a minute or two.
 
 The backend contract:
 
