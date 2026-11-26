@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>English → Sanskrit Translator</title>
+<title>English · Hindi · Sanskrit Translator</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font:15px system-ui,sans-serif;background:#f7f6f3;color:#1f1e1b}
@@ -47,20 +47,21 @@ footer{margin-top:24px;font-size:12px;color:#6b675e}
     </div>
   </div>
   <div class="chips">Try: <span id="ch"></span></div>
-  <footer>Prototype. Set <code>API_URL</code> in <code>config.js</code> to use the real model backend.</footer>
+  <footer>English, Hindi and Sanskrit, powered by IndicTrans2. Set <code>API_URL</code> in <code>config.js</code> to use the real model backend.</footer>
 </div>
 <script src="config.js"></script>
 <script>
 var API = (window.APP_CONFIG && window.APP_CONFIG.API_URL) || "";
 var NL = "\n";
 var D = [
-  {en:"hello", sa:"नमस्ते", r:"namaste"},
-  {en:"good morning", sa:"सुप्रभातम्", r:"suprabhātam"},
-  {en:"thank you", sa:"धन्यवादः", r:"dhanyavādaḥ"},
-  {en:"where is the train station", sa:"रेलस्थानकं कुत्र अस्ति", r:"relasthānakaṃ kutra asti"},
-  {en:"how much does this cost", sa:"एतस्य मूल्यं कियत्", r:"etasya mūlyaṃ kiyat"}
+  {en:"hello", hi:"नमस्ते", sa:"नमस्ते", r:{hi:"namaste", sa:"namaste"}},
+  {en:"good morning", hi:"सुप्रभात", sa:"सुप्रभातम्", r:{hi:"suprabhāt", sa:"suprabhātam"}},
+  {en:"thank you", hi:"धन्यवाद", sa:"धन्यवादः", r:{hi:"dhanyavād", sa:"dhanyavādaḥ"}},
+  {en:"where is the train station", hi:"रेलवे स्टेशन कहाँ है", sa:"रेलस्थानकं कुत्र अस्ति", r:{hi:"relve sṭeśan kahāṁ hai", sa:"relasthānakaṃ kutra asti"}},
+  {en:"how much does this cost", hi:"इसकी कीमत कितनी है", sa:"एतस्य मूल्यं कियत्", r:{hi:"iskī kīmat kitnī hai", sa:"etasya mūlyaṃ kiyat"}}
 ];
-var N = {en:"English", sa:"Sanskrit"};
+var N = {en:"English", hi:"Hindi", sa:"Sanskrit"};
+var PH = {en:"Type English text", hi:"हिन्दी में लिखें", sa:"संस्कृते लिखतु"};
 function $(x){return document.getElementById(x)}
 function norm(s){return s.trim().toLowerCase().replace(/[?!.।]+$/,"")}
 function count(){$("cc").textContent = $("i").value.length + " / 5000"}
@@ -71,7 +72,7 @@ function mock(text, from, to){
     if(!l.trim()){out.push("");rom.push("");return}
     var k=norm(l), hit=null;
     D.forEach(function(d){ if(norm(d[from])===k) hit=d });
-    if(hit){out.push(hit[to]); rom.push(to==="sa"?hit.r:"")}
+    if(hit){out.push(hit[to]); rom.push(hit.r[to]||"")}
     else {miss=true; out.push(l); rom.push("")}
   });
   return Promise.resolve({translation:out.join(NL), romanized:rom.join(NL),
@@ -86,7 +87,13 @@ function remote(text, from, to){
     .then(function(j){ return {translation:j.translation||"", romanized:(j.romanized||"").replace(/\|\|/g,".").replace(/\|/g,"."), note:"Done"} });
 }
 
+function setLang(){
+  $("i").placeholder = PH[$("f").value];
+  $("o").lang = $("t").value;
+}
+
 function run(){
+  setLang();
   var from=$("f").value, to=$("t").value, text=$("i").value;
   $("st").textContent="Translating...";
   var slow = setTimeout(function(){ $("st").textContent="Waking up the model, the first request can take a minute..." }, 4000);
