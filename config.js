@@ -4,5 +4,5 @@
 // The backend must expose POST /translate {text, source, target} -> {translation, romanized}
 // and allow CORS from https://<your-username>.github.io
 window.APP_CONFIG = {
-  API_URL: ""
+  API_URL: "https://bll1984-aqueous-api.hf.space"
 };
