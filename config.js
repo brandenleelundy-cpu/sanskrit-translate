@@ -8,6 +8,6 @@ window.APP_CONFIG = {
   // ADSENSE_CLIENT: your publisher ID, e.g. "ca-pub-1234567890123456"
   // ADSENSE_SLOT:   an ad unit ID (Ads → By ad unit → Display ads), e.g. "1234567890".
   //                 Leave it empty to let AdSense "Auto ads" choose where ads go.
-  ADSENSE_CLIENT: "",
+  ADSENSE_CLIENT: "ca-pub-2534322497429337",
   ADSENSE_SLOT: ""
 };
