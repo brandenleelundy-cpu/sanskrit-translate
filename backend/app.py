@@ -9,6 +9,7 @@ settings to its Hugging Face repo id.
 """
 import os
 import threading
+import time
 
 import torch
 from fastapi import FastAPI, HTTPException
@@ -38,9 +39,12 @@ ALLOWED_ORIGINS = [
     if o.strip()
 ]
 MAX_CHARS = 5000
-NUM_BEAMS = int(os.getenv("NUM_BEAMS", "4"))
+NUM_BEAMS = int(os.getenv("NUM_BEAMS", "3"))
 
-torch.set_num_threads(max(1, os.cpu_count() or 1))
+# Free Spaces get 2 vCPUs, but os.cpu_count() reports the whole host machine,
+# which oversubscribes PyTorch and makes generation crawl.
+torch.set_num_threads(int(os.getenv("TORCH_THREADS", "2")))
+torch.set_num_interop_threads(1)
 
 app = FastAPI(title="Sanskrit translation API")
 app.add_middleware(
@@ -53,6 +57,7 @@ app.add_middleware(
 processor = IndicProcessor(inference=True)
 _loaded = {}
 _lock = threading.Lock()
+_gen_lock = threading.Lock()  # one generation at a time on a small CPU
 
 
 def get_model(direction):
@@ -73,7 +78,7 @@ def translate_lines(lines, src, tgt):
     batch = processor.preprocess_batch(lines, src_lang=s, tgt_lang=t)
     inputs = tok(batch, truncation=True, padding="longest", return_tensors="pt",
                  return_attention_mask=True)
-    with torch.inference_mode():
+    with _gen_lock, torch.inference_mode():
         out = model.generate(**inputs, use_cache=False, min_length=0,
                              max_length=256, num_beams=NUM_BEAMS, num_return_sequences=1)
     decoded = tok.batch_decode(out, skip_special_tokens=True,
@@ -101,6 +106,7 @@ def translate(req: TranslateRequest):
     if direction not in MODELS:
         raise HTTPException(400, "Supported directions: en->sa, sa->en")
 
+    t0 = time.time()
     lines = req.text.split("\n")
     idx = [i for i, l in enumerate(lines) if l.strip()]
     results = [""] * len(lines)
@@ -118,7 +124,8 @@ def translate(req: TranslateRequest):
     romanized = ""
     if req.target == "sa":
         romanized = transliterate(translation, sanscript.DEVANAGARI, sanscript.IAST)
-    return {"translation": translation, "romanized": romanized}
+    return {"translation": translation, "romanized": romanized,
+            "seconds": round(time.time() - t0, 2)}
 
 
 @app.on_event("startup")
