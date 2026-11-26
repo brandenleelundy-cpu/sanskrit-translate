@@ -39,3 +39,13 @@ POST /translate
 ```
 
 It must allow CORS from `https://<you>.github.io`. If the backend fails, the page falls back to the mock.
+
+## Fine-tune the model
+
+[`training/finetune_en_sa.ipynb`](training/finetune_en_sa.ipynb) fine-tunes IndicTrans2 for English → Sanskrit on a free GPU
+(Colab T4 or Kaggle), scores it against the base model on held-out test sets, and publishes it to the
+Hugging Face Hub only if it's a clear improvement.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/brandenleelundy-cpu/sanskrit-translate/blob/main/training/finetune_en_sa.ipynb)
+
+Then set `MODEL_EN_SA` in the Space's settings to the published model and restart the Space.
