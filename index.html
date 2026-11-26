@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English → Sanskrit Translator</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:15px system-ui,sans-serif;background:#f7f6f3;color:#1f1e1b}
+.app{max-width:960px;margin:0 auto;padding:24px 16px}
+h1{font-size:22px;margin:0 0 16px}
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+select,button{font:inherit;padding:8px 12px;border:1px solid #cfcac0;border-radius:8px;background:#fff;color:inherit}
+button{cursor:pointer}
+button.pri{background:#2f5fd0;border-color:#2f5fd0;color:#fff}
+.badge{margin-left:auto;font-size:12px;color:#6b675e;background:#ece9e1;border-radius:99px;padding:4px 10px}
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.panes{grid-template-columns:1fr}}
+.pane{background:#fff;border:1px solid #dcd7cc;border-radius:10px;padding:12px;min-height:260px;display:flex;flex-direction:column}
+textarea{flex:1;border:0;outline:0;resize:none;font:inherit;font-size:17px;min-height:180px;background:transparent;color:inherit}
+.out{flex:1;min-height:120px;white-space:pre-wrap;font-size:20px}
+.rom{color:#6b675e;font-size:14px;font-style:italic;white-space:pre-wrap;min-height:28px}
+.meta{display:flex;justify-content:space-between;align-items:center;color:#6b675e;font-size:12px;margin-top:8px;gap:8px}
+.chips{margin-top:12px;font-size:12px;color:#6b675e}
+.chips button{font-size:12px;padding:4px 8px;margin:2px 4px 2px 0}
+footer{margin-top:24px;font-size:12px;color:#6b675e}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Translate</h1>
+  <div class="bar">
+    <select id="f" aria-label="From"></select>
+    <button type="button" id="sw" aria-label="Swap">&#8644;</button>
+    <select id="t" aria-label="To"></select>
+    <span class="badge" id="eng">Mock engine</span>
+  </div>
+  <div class="panes">
+    <div class="pane">
+      <textarea id="i" maxlength="5000" placeholder="Type English text"></textarea>
+      <div class="meta"><span id="cc">0 / 5000</span><button type="button" id="go" class="pri">Translate</button></div>
+    </div>
+    <div class="pane">
+      <div class="out" id="o" lang="sa"></div>
+      <div class="rom" id="r"></div>
+      <div class="meta"><span id="st">Ready</span><button type="button" id="cp">Copy</button></div>
+    </div>
+  </div>
+  <div class="chips">Try: <span id="ch"></span></div>
+  <footer>Prototype. Set <code>API_URL</code> in <code>config.js</code> to use the real model backend.</footer>
+</div>
+<script src="config.js"></script>
+<script>
+var API = (window.APP_CONFIG && window.APP_CONFIG.API_URL) || "";
+var NL = "\n";
+var D = [
+  {en:"hello", sa:"नमस्ते", r:"namaste"},
+  {en:"good morning", sa:"सुप्रभातम्", r:"suprabhātam"},
+  {en:"thank you", sa:"धन्यवादः", r:"dhanyavādaḥ"},
+  {en:"where is the train station", sa:"रेलस्थानकं कुत्र अस्ति", r:"relasthānakaṃ kutra asti"},
+  {en:"how much does this cost", sa:"एतस्य मूल्यं कियत्", r:"etasya mūlyaṃ kiyat"}
+];
+var N = {en:"English", sa:"Sanskrit"};
+function $(x){return document.getElementById(x)}
+function norm(s){return s.trim().toLowerCase().replace(/[?!.।]+$/,"")}
+function count(){$("cc").textContent = $("i").value.length + " / 5000"}
+
+function mock(text, from, to){
+  var miss=false, out=[], rom=[];
+  text.split(NL).forEach(function(l){
+    if(!l.trim()){out.push("");rom.push("");return}
+    var k=norm(l), hit=null;
+    D.forEach(function(d){ if(norm(d[from])===k) hit=d });
+    if(hit){out.push(hit[to]); rom.push(to==="sa"?hit.r:"")}
+    else {miss=true; out.push(l); rom.push("")}
+  });
+  return Promise.resolve({translation:out.join(NL), romanized:rom.join(NL),
+    note: miss ? "Mock engine only knows the sample phrases; other lines are echoed" : "Done (mock engine)"});
+}
+
+function remote(text, from, to){
+  return fetch(API.replace(/\/$/,"") + "/translate", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({text:text, source:from, target:to})
+  }).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json() })
+    .then(function(j){ return {translation:j.translation||"", romanized:j.romanized||"", note:"Done"} });
+}
+
+function run(){
+  var from=$("f").value, to=$("t").value, text=$("i").value;
+  $("st").textContent="Translating...";
+  (API ? remote(text, from, to) : mock(text, from, to)).then(function(res){
+    $("o").textContent=res.translation; $("r").textContent=res.romanized; $("st").textContent=res.note;
+  }).catch(function(e){
+    $("st").textContent="Backend error (" + e.message + "), using mock";
+    mock(text, from, to).then(function(res){ $("o").textContent=res.translation; $("r").textContent=res.romanized; });
+  });
+}
+
+$("eng").textContent = API ? "Live model" : "Mock engine, not the real model";
+for (var k in N){ $("f").add(new Option(N[k],k)); $("t").add(new Option(N[k],k)) }
+$("f").value="en"; $("t").value="sa";
+D.forEach(function(d){
+  var b=document.createElement("button"); b.type="button"; b.textContent=d.en;
+  b.onclick=function(){ $("i").value=d[$("f").value]; count(); run() };
+  $("ch").appendChild(b);
+});
+$("go").onclick=run; $("i").oninput=count; $("f").onchange=run; $("t").onchange=run;
+$("sw").onclick=function(){ var a=$("f").value, o=$("o").textContent; $("f").value=$("t").value; $("t").value=a; if(o) $("i").value=o; count(); run() };
+$("cp").onclick=function(){
+  try { navigator.clipboard.writeText($("o").textContent).then(function(){$("st").textContent="Copied"}, function(){$("st").textContent="Select the text to copy"}) }
+  catch(e){ $("st").textContent="Select the text to copy" }
+};
+$("i").value="Where is the train station?"; count(); run();
+</script>
+</body>
+</html>
